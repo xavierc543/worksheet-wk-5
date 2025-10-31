@@ -29,3 +29,65 @@ Your output files must be structured exactly as described - output files for all
 Note:
 Your code will only be tested on valid files in the format shown in the 4 example files in this folder - you do not need to validate any data.
 '''
+
+filename = input()
+filename = "student_data_10.csv"
+grades = []
+try:
+     with open(filename,"r") as file:
+          next(file)
+
+          for line in file:
+               grade = line.split(',')
+               grades.extend(grade)
+
+          grades1 = [cleanedline.strip() for cleanedline in grades]  
+          data = []
+
+          for line in grades1:
+               if line != '':
+                    data.append(line)
+
+except FileNotFoundError:
+     print("File not found")
+
+
+
+filename = filename + "_out.csv"
+
+count = 0
+total = 0 
+print(data)
+
+try:
+     with open(filename,"w") as file2:
+
+          for line in data:
+               if "S" in line:
+
+                    studentid = line
+                    average = total / count
+                    count = 0
+                    total = 0 
+
+                    if average >= 70:
+                         classification = "1"
+                    elif average >= 60:
+                         classification = "2:1"
+                    elif average >= 50:
+                         classification = "2:2"
+                    elif average >= 40:
+                         classification = "3"
+                    else:
+                         classification = "F"
+
+                    finalline = (f"{studentid},{average:.2f},{classification},")
+                    file2.write(finalline)
+               else:
+                    count += 1
+                    total += int(line)
+               
+except FileExistsError:
+     print("File Not found")
+
+data.
