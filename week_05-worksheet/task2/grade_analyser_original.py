@@ -31,8 +31,8 @@ Your code will only be tested on valid files in the format shown in the 4 exampl
 '''
 
 filename = input()
-filename = "student_data_10.csv"
 grades = []
+
 try:
      with open(filename,"r") as file:
           next(file)
@@ -42,15 +42,32 @@ try:
                grades.extend(grade)
 
           grades1 = [cleanedline.strip() for cleanedline in grades]  
+
           data = []
+          data1 = []
+          temp = []
+
 
           for line in grades1:
+               print(line)
                if line != '':
-                    data.append(line)
+                    data1.append(line)
 
-except FileNotFoundError:
+          for line in data1:
+               if 'S' in line:
+                    if temp:
+                         data.append(temp)
+                    temp = [line]
+               else:
+                    temp.append(line)
+
+          if temp:
+               data.append(temp)
+          
+except FileNotFoundError: 
      print("File not found")
 
+print(data)
 
 
 filename = filename + "_out.csv"
@@ -59,35 +76,30 @@ count = 0
 total = 0 
 print(data)
 
-try:
-     with open(filename,"w") as file2:
+with open (filename,"w") as outfile:
 
-          for line in data:
-               if "S" in line:
+     for student in data:
+          student_id = student[0]
 
-                    studentid = line
-                    average = total / count
-                    count = 0
-                    total = 0 
+          for grade in student[1:]:
 
-                    if average >= 70:
-                         classification = "1"
-                    elif average >= 60:
-                         classification = "2:1"
-                    elif average >= 50:
-                         classification = "2:2"
-                    elif average >= 40:
-                         classification = "3"
-                    else:
-                         classification = "F"
+               total += int(grade)
+               count += 1
+          
+          average = total / count
+          total = 0
+          count = 0
 
-                    finalline = (f"{studentid},{average:.2f},{classification},")
-                    file2.write(finalline)
-               else:
-                    count += 1
-                    total += int(line)
-               
-except FileExistsError:
-     print("File Not found")
+          if average >= 70:
+               classification = "1"
+          elif average >= 60:
+               classification = "2:1"
+          elif average >= 50:
+               classification = "2:2"
+          elif average >= 40:
+               classification = "3"
+          else:
+               classification = "F"
 
-data.
+          outfile.write(f"{student_id},{average:.2f},{classification}\n")
+
